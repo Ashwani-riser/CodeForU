@@ -32,7 +32,7 @@ export function EditorToolbar({
   const isAnyRunning = isRunning || isSubmitting;
 
   return (
-    <div className="flex items-center justify-between px-3 py-2 border-b border-border/50 bg-card/50">
+    <div className="flex items-center justify-between px-3 py-2 border-b border-[#1F2937] bg-[#111827]">
       <div className="flex items-center gap-2">
         <LanguageSelector value={language} onChange={onLanguageChange} />
       </div>
@@ -43,7 +43,7 @@ export function EditorToolbar({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                className="h-8 w-8 text-slate-400 hover:text-slate-200"
                 onClick={onReset}
               />
             }
@@ -57,13 +57,13 @@ export function EditorToolbar({
         <FontSizeSelector />
         <FullscreenButton />
 
-        <div className="w-px h-5 bg-border/50 mx-1" />
+        <div className="w-px h-5 bg-[#1F2937] mx-1" />
 
         <Button
           size="sm"
           onClick={onRun}
           disabled={isAnyRunning}
-          className="h-8 gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium"
+          className="h-8 gap-1.5 bg-[#10B981] hover:bg-[#059669] text-white text-xs font-medium"
         >
           {isRunning ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -76,7 +76,7 @@ export function EditorToolbar({
           size="sm"
           onClick={onSubmit}
           disabled={isAnyRunning}
-          className="h-8 gap-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-medium shadow-md shadow-violet-500/20"
+          className="h-8 gap-1.5 bg-gradient-to-r from-[#0891b2] to-[#06B6D4] hover:from-[#0e7490] hover:to-[#0891b2] text-white text-xs font-medium shadow-md shadow-[#06B6D4]/20"
         >
           {isSubmitting ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />

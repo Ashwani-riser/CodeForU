@@ -16,12 +16,12 @@ export function FontSizeSelector() {
 
   return (
     <Select value={String(fontSize)} onValueChange={(val) => setFontSize(Number(val))}>
-      <SelectTrigger className="w-[70px] h-8 bg-background/50 border-border/50 text-xs">
+      <SelectTrigger className="w-[70px] h-8 bg-[#0F172A] border-[#1F2937] text-xs text-slate-300 hover:border-[#10B98155] transition-colors">
         <SelectValue />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="bg-[#111827] border-[#1F2937]">
         {FONT_SIZES.map((size) => (
-          <SelectItem key={size} value={String(size)} className="text-xs">
+          <SelectItem key={size} value={String(size)} className="text-xs text-slate-300 focus:bg-[#0F172A] focus:text-slate-100">
             {size}px
           </SelectItem>
         ))}

@@ -11,14 +11,14 @@ interface CustomInputPanelProps {
 
 export function CustomInputPanel({ value, onChange }: CustomInputPanelProps) {
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between px-3 py-1.5 border-b border-border/40 bg-card/30">
-        <span className="text-xs font-medium text-muted-foreground">Input</span>
+    <div className="flex flex-col h-full bg-[#0D1117]">
+      <div className="flex items-center justify-between px-3 py-1.5 border-b border-[#1F2937] bg-[#111827]">
+        <span className="text-xs font-medium text-slate-400">Input</span>
         <Button
           variant="ghost"
           size="sm"
           onClick={() => onChange("")}
-          className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground gap-1"
+          className="h-6 px-2 text-xs text-slate-400 hover:text-slate-200 gap-1"
         >
           <RotateCcw className="h-3 w-3" />
           Clear
@@ -29,7 +29,7 @@ export function CustomInputPanel({ value, onChange }: CustomInputPanelProps) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Enter your test input here..."
-          className="h-full font-mono text-xs bg-transparent resize-none border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 p-3"
+          className="h-full font-mono text-xs bg-transparent text-slate-200 placeholder:text-slate-500 resize-none border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 p-3"
         />
       </div>
     </div>

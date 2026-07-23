@@ -56,16 +56,19 @@ export function useEditorState(slug: string) {
     [codeByLanguage, persist]
   );
 
+  const codeRef = useRef(codeByLanguage[language] ?? "");
+  codeRef.current = codeByLanguage[language] ?? "";
+
   const setCode = useCallback(
     (code: string) => {
-      setCodeByLanguage((prev) => {
-        const next = { ...prev, [language]: code };
-        persist(language, next);
-        return next;
-      });
+      setCodeByLanguage((prev) => ({ ...prev, [language]: code }));
     },
-    [language, persist]
+    [language]
   );
+
+  useEffect(() => {
+    persist(language, codeByLanguage);
+  }, [language, codeByLanguage, persist]);
 
   const code = codeByLanguage[language] ?? "";
 

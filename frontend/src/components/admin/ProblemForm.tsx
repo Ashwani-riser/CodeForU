@@ -221,7 +221,7 @@ export function ProblemForm({ mode, initialData, initialHiddenTestCases = [] }: 
                     control={control}
                     name="difficulty"
                     render={({ field }) => (
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value ?? ""}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select difficulty" />
                         </SelectTrigger>

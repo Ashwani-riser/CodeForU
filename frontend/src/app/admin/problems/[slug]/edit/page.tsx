@@ -20,7 +20,7 @@ export default function EditProblemPage() {
   useEffect(() => {
     const fetchProblem = async () => {
       try {
-        const slug = params.id as string;
+        const slug = params.slug as string;
         const res = await problemService.getBySlug(slug);
         setProblem(res.data);
 
@@ -40,7 +40,7 @@ export default function EditProblemPage() {
       }
     };
     fetchProblem();
-  }, [params.id]);
+  }, [params.slug]);
 
   if (isLoading) return <div className="p-6"><PageSkeleton /></div>;
   if (error || !problem) return <div className="p-6"><ErrorState description={error || "Problem not found"} onRetry={() => router.refresh()} /></div>;

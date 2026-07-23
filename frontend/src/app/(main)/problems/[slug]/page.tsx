@@ -2,13 +2,15 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
+import { motion } from "framer-motion";
 import { Group, Panel, Separator } from "react-resizable-panels";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ProblemHeader } from "@/components/problem/ProblemHeader";
-import { ProblemDescription } from "@/components/problem/ProblemDescription";
+import { ProblemTabs } from "@/components/problem/ProblemTabs";
 import { EditorToolbar } from "@/components/editor/EditorToolbar";
-import { CodeEditor } from "@/components/editor/CodeEditor";
+import dynamic from "next/dynamic";
+const CodeEditor = dynamic(() => import("@/components/editor/CodeEditor").then((m) => ({ default: m.CodeEditor })), { ssr: false });
 import { OutputPanel } from "@/components/editor/OutputPanel";
 import { CustomInputPanel } from "@/components/editor/CustomInputPanel";
 import { PageSkeleton } from "@/components/common/LoadingSkeleton";
@@ -115,14 +117,19 @@ export default function ProblemDetailPage() {
     return () => window.removeEventListener("keydown", handler);
   }, [handleRun, handleSubmit]);
 
-  if (isLoading) return <div className="h-screen flex items-center justify-center"><PageSkeleton /></div>;
-  if (error || !problem) return <div className="h-screen flex items-center justify-center"><ErrorState description={error || "Problem not found"} /></div>;
+  if (isLoading) return <div className="h-screen flex items-center justify-center bg-[#0B1120]"><PageSkeleton /></div>;
+  if (error || !problem) return <div className="h-screen flex items-center justify-center bg-[#0B1120]"><ErrorState description={error || "Problem not found"} /></div>;
 
   const problemContent = (
-    <div className="p-4 space-y-4">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="p-5 space-y-5"
+    >
       <ProblemHeader problem={problem} />
-      <ProblemDescription problem={problem} />
-    </div>
+      <ProblemTabs problem={problem} />
+    </motion.div>
   );
 
   const editorContent = (
@@ -140,8 +147,8 @@ export default function ProblemDetailPage() {
       <div className="flex-1 min-h-0">
         <CodeEditor language={language} value={code} onChange={setCode} fontSize={fontSize} />
       </div>
-      <div className="h-[240px] min-h-[200px] flex border-t border-border/40">
-        <div className="w-1/2 min-w-0 border-r border-border/40">
+      <div className="h-[240px] min-h-[200px] flex border-t border-[#1F2937]">
+        <div className="w-1/2 min-w-0 border-r border-[#1F2937]">
           <CustomInputPanel value={customInput} onChange={setCustomInput} />
         </div>
         <div className="w-1/2 min-w-0">
@@ -153,11 +160,11 @@ export default function ProblemDetailPage() {
 
   return (
     <TooltipProvider>
-      <div className={`${isFullscreen ? "fixed inset-0 z-50 bg-background" : ""} flex flex-col h-[calc(100vh-3.5rem)]`}>
+      <div className={`${isFullscreen ? "fixed inset-0 z-50 bg-[#0B1120]" : ""} flex flex-col w-full h-[calc(100vh-3.5rem)] bg-[#0B1120]`}>
         {/* Mobile: vertical stack */}
         <div className="md:hidden flex flex-col h-full overflow-auto">
           <div className="shrink-0">{problemContent}</div>
-          <div className="shrink-0 border-t border-border/40">
+          <div className="shrink-0 border-t border-[#1F2937]">
             {editorContent}
           </div>
         </div>
@@ -171,7 +178,7 @@ export default function ProblemDetailPage() {
               </ScrollArea>
             </Panel>
 
-            <Separator className="w-1.5 bg-border/30 hover:bg-primary/30 transition-colors" />
+            <Separator className="w-1.5 bg-[#1F2937] hover:bg-[#10B981]/30 transition-colors" />
 
             <Panel defaultSize={55} minSize={40} className="overflow-hidden">
               {editorContent}

@@ -4,7 +4,8 @@ import { useState } from "react";
 import { Play, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Group, Panel, Separator } from "react-resizable-panels";
-import { CodeEditor } from "./CodeEditor";
+import dynamic from "next/dynamic";
+const CodeEditor = dynamic(() => import("./CodeEditor").then((m) => ({ default: m.CodeEditor })), { ssr: false });
 import { LanguageSelector } from "./LanguageSelector";
 import { OutputPanel } from "./OutputPanel";
 import { CustomInputPanel } from "./CustomInputPanel";
@@ -82,25 +83,25 @@ export function CodePanel({ problemId, problemSlug, showSubmit = true }: CodePan
   };
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-full bg-[#0B1120]">
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-border/40 bg-card/30 sticky top-0 z-10">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-[#1F2937] bg-[#111827] sticky top-0 z-10">
         <LanguageSelector value={language} onChange={setLanguage} />
         <div className="flex items-center gap-1.5">
           <Button
             variant="ghost"
             size="sm"
             onClick={handleReset}
-            className="h-8 px-2.5 text-xs text-muted-foreground hover:text-foreground gap-1"
+            className="h-8 px-2.5 text-xs text-slate-400 hover:text-slate-200 gap-1"
           >
             Reset
           </Button>
-          <div className="w-px h-4 bg-border/40 mx-0.5" />
+          <div className="w-px h-4 bg-[#1F2937] mx-0.5" />
           <Button
             size="sm"
             onClick={handleRun}
             disabled={isRunningAny}
-            className="h-8 gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium"
+            className="h-8 gap-1.5 bg-[#10B981] hover:bg-[#059669] text-white text-xs font-medium"
           >
             {isRunning ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -114,7 +115,7 @@ export function CodePanel({ problemId, problemSlug, showSubmit = true }: CodePan
               size="sm"
               onClick={handleSubmit}
               disabled={isRunningAny}
-              className="h-8 gap-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-medium"
+              className="h-8 gap-1.5 bg-gradient-to-r from-[#0891b2] to-[#06B6D4] hover:from-[#0e7490] hover:to-[#0891b2] text-white text-xs font-medium"
             >
               {isSubmitting ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -134,11 +135,11 @@ export function CodePanel({ problemId, problemSlug, showSubmit = true }: CodePan
             <CodeEditor language={language} value={code} onChange={setCode} />
           </Panel>
 
-          <Separator className="w-1 bg-border/30 hover:bg-primary/30 transition-colors" />
+          <Separator className="w-1 bg-[#1F2937] hover:bg-[#10B981]/30 transition-colors" />
 
           <Panel defaultSize={30} minSize={20}>
             <div className="flex flex-col h-full">
-              <div className="flex-1 min-h-0 border-b border-border/40">
+              <div className="flex-1 min-h-0 border-b border-[#1F2937]">
                 <CustomInputPanel value={customInput} onChange={setCustomInput} />
               </div>
               <div className="flex-1 min-h-0">

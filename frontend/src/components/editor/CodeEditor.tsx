@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 import Editor, { type OnMount, type OnChange } from "@monaco-editor/react";
 import { useThemeStore } from "@/store/useThemeStore";
 
@@ -8,44 +8,45 @@ const CODEFORU_DARK = {
   inherit: true,
   base: "vs-dark" as const,
   rules: [
-    { token: "keyword", foreground: "c084fc", fontStyle: "bold" },
-    { token: "keyword.control", foreground: "c084fc" },
-    { token: "string", foreground: "34d399" },
-    { token: "string.escape", foreground: "6ee7b7" },
-    { token: "number", foreground: "fbbf24" },
-    { token: "comment", foreground: "64748b", fontStyle: "italic" },
-    { token: "type", foreground: "22d3ee" },
-    { token: "type.identifier", foreground: "22d3ee" },
-    { token: "function", foreground: "818cf8" },
-    { token: "function.declaration", foreground: "818cf8" },
+    { token: "keyword", foreground: "c586c0", fontStyle: "bold" },
+    { token: "keyword.control", foreground: "c586c0" },
+    { token: "string", foreground: "7ee787" },
+    { token: "string.escape", foreground: "a5d6ff" },
+    { token: "number", foreground: "f0883e" },
+    { token: "comment", foreground: "6a9955", fontStyle: "italic" },
+    { token: "type", foreground: "4ec9b0" },
+    { token: "type.identifier", foreground: "4ec9b0" },
+    { token: "function", foreground: "dcdcaa" },
+    { token: "function.declaration", foreground: "dcdcaa" },
     { token: "variable", foreground: "e2e8f0" },
-    { token: "variable.predefined", foreground: "fb7185" },
-    { token: "operator", foreground: "fb7185" },
-    { token: "delimiter", foreground: "94a3b8" },
-    { token: "delimiter.bracket", foreground: "94a3b8" },
-    { token: "predefined", foreground: "f472b6" },
+    { token: "variable.predefined", foreground: "ff7b72" },
+    { token: "operator", foreground: "d4d4d4" },
+    { token: "delimiter", foreground: "808080" },
+    { token: "delimiter.bracket", foreground: "808080" },
+    { token: "predefined", foreground: "c586c0" },
     { token: "identifier", foreground: "e2e8f0" },
-    { token: "annotation", foreground: "fbbf24" },
+    { token: "annotation", foreground: "f0883e" },
+    { token: "constant", foreground: "79c0ff" },
   ],
   colors: {
-    "editor.background": "#1a1525",
+    "editor.background": "#0D1117",
     "editor.foreground": "#e2e8f0",
-    "editor.lineHighlightBackground": "#251e36",
-    "editor.selectionBackground": "#4c1d9540",
-    "editor.inactiveSelectionBackground": "#4c1d9520",
-    "editorCursor.foreground": "#a78bfa",
-    "editorLineNumber.foreground": "#4a3f6b",
-    "editorLineNumber.activeForeground": "#a78bfa",
-    "editorIndentGuide.background": "#2a2240",
-    "editorIndentGuide.activeBackground": "#4c1d9550",
-    "editor.selectionHighlightBackground": "#4c1d9520",
-    "editorBracketMatch.background": "#4c1d9530",
-    "editorBracketMatch.border": "#7c3aed50",
-    "editorGutter.background": "#1a1525",
+    "editor.lineHighlightBackground": "#161b22",
+    "editor.selectionBackground": "#264f78",
+    "editor.inactiveSelectionBackground": "#264f7850",
+    "editorCursor.foreground": "#ffffff",
+    "editorLineNumber.foreground": "#484f58",
+    "editorLineNumber.activeForeground": "#e2e8f0",
+    "editorIndentGuide.background": "#21262d",
+    "editorIndentGuide.activeBackground": "#30363d",
+    "editor.selectionHighlightBackground": "#264f7840",
+    "editorBracketMatch.background": "#264f7850",
+    "editorBracketMatch.border": "#58a6ff",
+    "editorGutter.background": "#0D1117",
     "scrollbar.shadow": "#00000030",
-    "scrollbarSlider.background": "#4c1d9530",
-    "scrollbarSlider.hoverBackground": "#4c1d9550",
-    "scrollbarSlider.activeBackground": "#4c1d9570",
+    "scrollbarSlider.background": "#484f5850",
+    "scrollbarSlider.hoverBackground": "#484f5870",
+    "scrollbarSlider.activeBackground": "#484f5890",
   },
 };
 
@@ -58,20 +59,20 @@ const CODEFORU_LIGHT = {
     { token: "number", foreground: "d97706" },
     { token: "comment", foreground: "94a3b8", fontStyle: "italic" },
     { token: "type", foreground: "0891b2" },
-    { token: "function", foreground: "4f46e5" },
+    { token: "function", foreground: "0891b2" },
     { token: "variable", foreground: "1e293b" },
     { token: "operator", foreground: "e11d48" },
     { token: "predefined", foreground: "db2777" },
   ],
   colors: {
-    "editor.background": "#faf8ff",
+    "editor.background": "#f8fafc",
     "editor.foreground": "#1e293b",
-    "editorCursor.foreground": "#7c3aed",
-    "editorLineNumber.foreground": "#c4b5fd",
-    "editorLineNumber.activeForeground": "#7c3aed",
-    "editor.selectionBackground": "#7c3aed20",
-    "editorIndentGuide.background": "#ede9fe",
-    "editorIndentGuide.activeBackground": "#7c3aed30",
+    "editorCursor.foreground": "#10B981",
+    "editorLineNumber.foreground": "#cbd5e1",
+    "editorLineNumber.activeForeground": "#10B981",
+    "editor.selectionBackground": "#10B98120",
+    "editorIndentGuide.background": "#e2e8f0",
+    "editorIndentGuide.activeBackground": "#10B98130",
   },
 };
 
@@ -85,16 +86,18 @@ interface CodeEditorProps {
 
 export function CodeEditor({ language, value, onChange, height = "100%", fontSize = 15 }: CodeEditorProps) {
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
   const { theme } = useThemeStore();
 
-  const handleMount: OnMount = (editor) => {
+  const handleMount: OnMount = useCallback((editor) => {
     editorRef.current = editor;
     editor.focus();
-  };
+  }, []);
 
-  const handleChange: OnChange = (val) => {
-    if (val !== undefined) onChange(val);
-  };
+  const handleChange: OnChange = useCallback((val) => {
+    if (val !== undefined) onChangeRef.current(val);
+  }, []);
 
   return (
     <Editor

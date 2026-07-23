@@ -17,7 +17,7 @@ export function AdminRoute({ children }: { children: React.ReactNode }) {
         router.push("/403");
       }
     }
-  }, [isAuthenticated, isAdmin, isLoading, router]);
+  }, [isAuthenticated, isAdmin, isLoading]);
 
   if (isLoading) return <PageSkeleton />;
   if (!isAuthenticated || !isAdmin) return null;

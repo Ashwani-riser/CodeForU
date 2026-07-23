@@ -8,6 +8,14 @@ const api = axios.create({
   },
 });
 
+const AUTH_EXCLUDED_PATHS = [
+  "/login",
+  "/signup",
+  "/forgot-password",
+  "/reset-password",
+  "/verify-email",
+];
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -15,11 +23,7 @@ api.interceptors.response.use(
       if (typeof window !== "undefined") {
         const pathname = window.location.pathname;
         if (
-          !pathname.startsWith("/login") &&
-          !pathname.startsWith("/signup") &&
-          !pathname.startsWith("/forgot-password") &&
-          !pathname.startsWith("/reset-password") &&
-          !pathname.startsWith("/verify-email") &&
+          !AUTH_EXCLUDED_PATHS.some((p) => pathname.startsWith(p)) &&
           pathname !== "/"
         ) {
           window.location.href = "/login";

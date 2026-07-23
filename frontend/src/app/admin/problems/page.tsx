@@ -192,7 +192,7 @@ export default function AdminProblemsPage() {
                               <Eye className="h-4 w-4" />
                             </Button>
                           </Link>
-                          <Link href={`/admin/problems/${problem._id}/edit`}>
+                          <Link href={`/admin/problems/${problem.slug}/edit`}>
                             <Button
                               variant="ghost"
                               size="icon"

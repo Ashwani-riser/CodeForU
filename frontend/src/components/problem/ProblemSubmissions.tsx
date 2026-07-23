@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { VerdictBadge } from "@/components/editor/VerdictBadge";
 import { submissionService } from "@/services/submission.service";
@@ -30,7 +29,7 @@ export function ProblemSubmissions({ problemId }: ProblemSubmissionsProps) {
   }, [problemId]);
 
   if (loading) {
-    return <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">Loading submissions...</div>;
+    return <div className="flex items-center justify-center py-8 text-sm text-slate-400">Loading submissions...</div>;
   }
 
   if (submissions.length === 0) {
@@ -40,22 +39,20 @@ export function ProblemSubmissions({ problemId }: ProblemSubmissionsProps) {
   return (
     <div className="space-y-2">
       {submissions.map((sub) => (
-        <Card key={sub._id} className="border-border/30">
-          <CardContent className="py-2.5 px-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <VerdictBadge verdict={sub.verdict} size="sm" />
-                <Badge variant="outline" className="text-xs uppercase border-border/50 text-muted-foreground">
-                  {sub.language}
-                </Badge>
-              </div>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                {sub.executionTime > 0 && <span>{sub.executionTime}ms</span>}
-                <span>{new Date(sub.createdAt).toLocaleString()}</span>
-              </div>
+        <div key={sub._id} className="bg-[#111827] border border-[#1F2937] rounded-2xl px-4 py-2.5 hover:border-[#10B98155] transition-all duration-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <VerdictBadge verdict={sub.verdict} size="sm" />
+              <Badge variant="outline" className="text-xs uppercase border-[#1F2937] text-slate-400">
+                {sub.language}
+              </Badge>
             </div>
-          </CardContent>
-        </Card>
+            <div className="flex items-center gap-4 text-xs text-slate-400">
+              {sub.executionTime > 0 && <span>{sub.executionTime}ms</span>}
+              <span>{new Date(sub.createdAt).toLocaleString()}</span>
+            </div>
+          </div>
+        </div>
       ))}
     </div>
   );
