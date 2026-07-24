@@ -203,7 +203,7 @@ export default function ProfilePage() {
                     <div className="flex items-center gap-3">
                       <VerdictBadge verdict={sub.verdict} size="sm" showIcon={false} />
                       <span className="text-sm">
-                        {typeof sub.problemId === "object" ? sub.problemId.title : "Unknown Problem"}
+                        {sub.problemId && typeof sub.problemId === "object" ? sub.problemId.title : "Unknown Problem"}
                       </span>
                     </div>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground">

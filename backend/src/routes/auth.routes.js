@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
     registerUser,
     loginUser,
+    logoutUser,
     verifyEmail,
     resendVerificationEmail,
     forgotPassword,
@@ -19,5 +20,6 @@ router.post("/resend-verification",authLimiter,resendVerificationEmail);
 router.post("/forgot-password", authLimiter, forgotPassword);
 router.post("/reset-password/:token", authLimiter, resetPassword);
 router.get("/currentUser", verifyJWT, getCurrentUser);
+router.post("/logout", verifyJWT, logoutUser);
 
 export default router;

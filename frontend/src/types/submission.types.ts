@@ -40,3 +40,21 @@ export interface SubmitCodePayload {
   language: string;
   sourceCode: string;
 }
+
+export interface SampleRunResult {
+  sampleIndex: number;
+  input: string;
+  expectedOutput: string;
+  actualOutput: string;
+  passed: boolean;
+  executionTime: number;
+  error?: string;
+}
+
+export interface SampleRunResults {
+  results: SampleRunResult[];
+  totalPassed: number;
+  totalSamples: number;
+  totalExecutionTime: number;
+  allPassed: boolean;
+}

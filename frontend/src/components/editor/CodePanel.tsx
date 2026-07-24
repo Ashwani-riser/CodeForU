@@ -143,7 +143,7 @@ export function CodePanel({ problemId, problemSlug, showSubmit = true }: CodePan
                 <CustomInputPanel value={customInput} onChange={setCustomInput} />
               </div>
               <div className="flex-1 min-h-0">
-                <OutputPanel output={output} submission={submission} error={error} />
+                <OutputPanel output={output} submission={submission} sampleResults={null} error={error} />
               </div>
             </div>
           </Panel>

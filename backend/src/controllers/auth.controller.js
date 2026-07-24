@@ -336,9 +336,29 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
 });
 
+const logoutUser = asyncHandler(async (req, res) => {
+    await User.findByIdAndUpdate(
+        req.user._id,
+        { $unset: { refreshToken: 1 } },
+        { new: true }
+    );
+
+    const options = {
+        httpOnly: true,
+        secure: false,
+    };
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(new ApiResponse(200, null, "Logged out successfully"));
+});
+
 export {
     registerUser,
     loginUser,
+    logoutUser,
     verifyEmail,
     resendVerificationEmail,
     forgotPassword,

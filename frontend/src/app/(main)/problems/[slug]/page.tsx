@@ -20,7 +20,7 @@ import { submissionService } from "@/services/submission.service";
 import { useEditorState } from "@/hooks/useEditorState";
 import { useProblemPageStore } from "@/store/useProblemPageStore";
 import type { Problem } from "@/types/problem.types";
-import type { RunCodeResponse, Submission } from "@/types/submission.types";
+import type { RunCodeResponse, Submission, SampleRunResults } from "@/types/submission.types";
 
 export default function ProblemDetailPage() {
   const params = useParams();
@@ -39,6 +39,7 @@ export default function ProblemDetailPage() {
   const [output, setOutput] = useState<RunCodeResponse | null>(null);
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [sampleResults, setSampleResults] = useState<SampleRunResults | null>(null);
 
   useEffect(() => {
     const fetchProblem = async () => {
@@ -57,11 +58,47 @@ export default function ProblemDetailPage() {
   const handleRun = useCallback(async () => {
     setIsRunning(true);
     setOutput(null);
+    setSampleResults(null);
     setSubmission(null);
     setApiError(null);
     try {
-      const res = await submissionService.runCode({ language, sourceCode: code, input: customInput || undefined });
-      setOutput(res.data);
+      if (customInput.trim()) {
+        const res = await submissionService.runCode({ language, sourceCode: code, input: customInput });
+        setOutput(res.data);
+      } else if (problem?.sampleTestCases?.length) {
+        const promises = problem.sampleTestCases.map((sample, i) =>
+          submissionService
+            .runCode({ language, sourceCode: code, input: sample.input })
+            .then((res) => ({
+              sampleIndex: i + 1,
+              input: sample.input,
+              expectedOutput: sample.output,
+              actualOutput: res.data.output || res.data.error || "",
+              passed: res.data.output?.trim() === sample.output.trim() && res.data.success,
+              executionTime: res.data.executionTime,
+              error: res.data.error,
+            }))
+            .catch((err) => ({
+              sampleIndex: i + 1,
+              input: sample.input,
+              expectedOutput: sample.output,
+              actualOutput: "",
+              passed: false,
+              executionTime: 0,
+              error: err?.response?.data?.message || "Execution failed",
+            }))
+        );
+        const results = await Promise.all(promises);
+        const totalPassed = results.filter((r) => r.passed).length;
+        const totalExecutionTime = results.reduce((sum, r) => sum + r.executionTime, 0);
+        setSampleResults({
+          results,
+          totalPassed,
+          totalSamples: results.length,
+          totalExecutionTime,
+          allPassed: totalPassed === results.length,
+        });
+      }
     } catch (err: any) {
       if (err?.response?.status === 401) {
         setApiError("Please log in to run code");
@@ -72,12 +109,13 @@ export default function ProblemDetailPage() {
     } finally {
       setIsRunning(false);
     }
-  }, [language, code, customInput]);
+  }, [language, code, customInput, problem]);
 
   const handleSubmit = useCallback(async () => {
     if (!problem) return;
     setIsSubmitting(true);
     setOutput(null);
+    setSampleResults(null);
     setSubmission(null);
     setApiError(null);
     try {
@@ -152,7 +190,7 @@ export default function ProblemDetailPage() {
           <CustomInputPanel value={customInput} onChange={setCustomInput} />
         </div>
         <div className="w-1/2 min-w-0">
-          <OutputPanel output={output} submission={submission} error={apiError} />
+          <OutputPanel output={output} submission={submission} sampleResults={sampleResults} error={apiError} />
         </div>
       </div>
     </div>
